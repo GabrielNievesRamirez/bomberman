@@ -1,0 +1,52 @@
+@startuml pintor
+
+class Dibujo
+{
+    - lineas : list<string>
+    - posicion : Vector
+    - velocidad : Verctor
+    - estilo : Estilo
+    + AgregarLinea()
+}
+
+class Vector
+{
+    - posX
+    - posY
+}
+
+class Archivo
+{
+    - direcctorio : string
+    + LeerDibujo(Dibujo)
+    + LeerAnimacion(Animacion)
+}
+
+class Estilo
+{
+    - colorFondo
+    - colorTexto
+}
+
+class Animacion
+{
+    + fotogramas : lis<Dibujo>
+    + fotogramaActual : int
+}
+
+class Lienzo
+{
+    - dibujos : list<Dibujo>
+    + pintar()
+    + agregarDibujo(Dibujo)
+
+
+}
+
+Dibujo *-- Vector
+Archivo o-- Dibujo
+Dibujo *-- Estilo
+Archivo o-- Animacion
+Lienzo o-- Dibujo //metodos (usar)
+
+@enduml
