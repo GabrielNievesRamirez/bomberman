@@ -4,49 +4,63 @@
 #include <iostream>
 #include <string>
 #include <thread>
-#include <experimental/random>
+#include <list>
+#include<fstream>
 
 using namespace std;
 using namespace ftxui;
 
 int main(int argc, char const *argv[])
 {
-  int fotograma = 0;
+    list<string> textos;
+    fstream imagen;
+    imagen.open("./assets/imagen.txt");
 
-  string reset;
+    string linea;
+    while (getline(imagen,linea))
+    {
+        textos.push_back(linea);
+    }
+    imagen.close();
 
-  while (true)
-  {
-   fotograma++;
+    int fotograma = 0;
+    int posX = 0;
+    int posY = 6;
+    string reset;
+    while (true)
+    {
+        fotograma++;
 
-   int r = std::experimental::randint(0, 255);
-   int g = std::experimental::randint(0, 255);
-   int b = std::experimental::randint(0, 255);
+        Element personaje = spinner(21, fotograma);
+        Decorator colorFondo = bgcolor(Color::DarkBlue);
+        Decorator colorTexto = color(Color::White);
+        Element dibujo = border({hbox(personaje) | colorFondo | colorTexto});
 
+        Dimensions Alto = Dimension::Full();
+        Dimensions Ancho = Dimension::Full();
 
+        Screen pantalla = Screen::Create(Ancho, Alto);
 
-   Element personaje = spinner(21,fotograma);
-   Decorator colorFondo = bgcolor(Color::RGB(r,g,b));
-   Decorator colorTexto = color(Color::RGB(r,g,b));
-   Element dibujo = border({
-      hbox(personaje) 
-  })| colorFondo | colorTexto;
+        Render(pantalla, dibujo);
+        int l = 0;
+        for (auto &&texto : textos)
+        {
+            int i = 0;
+            for (auto &&letra : texto)
+            {
+                pantalla.PixelAt(posX + i, posY + l).character = letra;
+                i++;
+            }
+            l++;
+        }
+        posX++;
 
-   Dimensions Alto = Dimension::Fixed(10);
-   Dimensions Ancho = Dimension::Full();
-   
-   Screen pantalla = Screen::Create(Ancho, Alto);
+        pantalla.Print();
+        reset = pantalla.ResetPosition();
+        cout << reset;
 
-   Render(pantalla,dibujo);
-   
-   pantalla.Print();
-   reset = pantalla.ResetPosition();
-   cout << reset;
-   this_thread::sleep_for(0.1s);
-  }
-  
-   return 0;
-  
+        this_thread::sleep_for(0.1s);
+    }
 
+    return 0;
 }
-

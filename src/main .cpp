@@ -2,7 +2,9 @@
 
 int main (int argc, char const *argv[])
 {
-    std::cout << "bomberman" << std:: endl;
+    Juego g;
+    g.iniciar();
+    
     retunr 0;
 }
 
